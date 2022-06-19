@@ -20,6 +20,7 @@ let operator=""
 let isZero=true
 let operatorPut=false
 let decimalPut=false
+let temp=[]
 function clickfun(e)
 {
     console.log('entered')
@@ -124,15 +125,13 @@ function clickPoint(e)
 }
 function clickEquals(e)
 {
-    console.log('eqals')
     if(firstOperandString!="" && secondOperandString!="")
     {
-        console.log("qualsif")
         evaluate(firstOperandString,secondOperandString,operator)
     }
 }
 
-function evaluate(first,second, operator)
+function evaluate(first,second,operator)
 {
     console.log("eval")
     if(first.startsWith('.'))
@@ -143,7 +142,11 @@ function evaluate(first,second, operator)
     {
         second=0+second
     }
-    console.log("evaluate")
+    if(operator=="/" && second=="0")
+    {
+        alert("Go divide by zero somewhere else genius")
+        return;
+    }
     if(operator=="+")
     result=''+add(parseFloat(first),parseFloat(second))
     if(operator=="-")
@@ -157,6 +160,11 @@ function evaluate(first,second, operator)
     if(operator=="^")
     result=''+exp(parseFloat(first),parseFloat(second))
     console.log(result)
+    temp=result.split('.')
+    if(temp.length==2 && temp[1].length>10)
+    {
+        result=''+(parseFloat(result).toFixed(10))
+    }
     currentstring+='='
     display.textContent=currentstring
     currentstring+=result
