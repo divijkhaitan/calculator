@@ -12,7 +12,6 @@ buttonequals.addEventListener('click',clickEquals)
 //buttons.forEach(button=>buttonarrr.push(button))
 //buttonarr.forEach(button=> button.addEventListener('click',clicked))
 //console.log(button)
-let longstring=""
 let currentstring=""
 let firstOperandString=""
 let secondOperandString=""
@@ -28,25 +27,58 @@ function clickfun(e)
     {
         display.textContent="0"
         currentstring="";
+        isZero=true
+        operatorPut=false
+        decimalPut=false
+        firstOperandString=""
+        secondOperandString=""
+        result=""
+        operator=""
         return
     }
     if(e.target.textContent=="C")
     {
-        display.textContent="0"
-        currentstring="";
-        return
+        if(operatorPut)
+        {
+            if(secondOperandString="")
+            {
+                operator=""
+                operatorPut=false
+                currentstring=currentstring.slice(0,(currentstring.length-1))
+            }
+            else
+            {
+                secondOperandString=secondOperandString.slice(0,(secondOperandString.length-1))
+                currentstring=currentstring.slice(0,(currentstring.length-1))
+            }
+        }
+        else
+        {
+            currentstring=currentstring.slice(0,(currentstring.length-1))
+            firstOperandString=firstOperandString.slice(0,(firstOperandString.length-1))
+        }
+        
     }
+    display.textContent=currentstring
 }
 function clicknum(e)
 {
+    if(e.target.textContent=="0"&&operatorPut&&secondOperandString=="0")
+    {
+        return;        
+    }
+        
+    if(e.target.textContent=="0"&&!operatorPut&&firstOperandString=="0")
+    {
+        return;
+    }
+
     if(operatorPut)
     {
-        console.log("entersecond")
         secondOperandString+=e.target.textContent;
     }
     else
     {
-        console.log("enterfirst")
         firstOperandString+=e.target.textContent;
     }
     currentstring=currentstring+e.target.textContent;
@@ -54,13 +86,21 @@ function clicknum(e)
 }
 function clickOp(e)
 {
-    operator=e.target.textContent
-    operatorPut=true
+    if(e.target.textContent=="-"&&firstOperandString=="")
+    {
+        firstOperandString+="-"
+    }
+    else
+    {
+        operator=e.target.textContent
+        operatorPut=true
+    }
     currentstring=currentstring+e.target.textContent;
     display.textContent=currentstring;
 }
 function clickPoint(e)
 {
+    console.log('point')
     if(operatorPut)
     {
         if(!(secondOperandString.includes('.')))
@@ -84,21 +124,30 @@ function clickPoint(e)
 }
 function clickEquals(e)
 {
-    currentstring+='='
-    display.textContent=currentstring
+    console.log('eqals')
     if(firstOperandString!="" && secondOperandString!="")
     {
+        console.log("qualsif")
         evaluate(firstOperandString,secondOperandString,operator)
     }
 }
 
 function evaluate(first,second, operator)
 {
+    console.log("eval")
+    if(first.startsWith('.'))
+    {
+        first=0+first
+    }
+    if(second.startsWith('.'))
+    {
+        second=0+second
+    }
     console.log("evaluate")
     if(operator=="+")
     result=''+add(parseFloat(first),parseFloat(second))
     if(operator=="-")
-    result=''+minus(parseFloat(first),parseFloat(second))
+    result=''+sub(parseFloat(first),parseFloat(second))
     if(operator=="X")
     result=''+mult(parseFloat(first),parseFloat(second))
     if(operator=="/")
@@ -107,17 +156,23 @@ function evaluate(first,second, operator)
     result=''+mod(parseFloat(first),parseFloat(second))
     if(operator=="^")
     result=''+exp(parseFloat(first),parseFloat(second))
-
+    console.log(result)
+    currentstring+='='
+    display.textContent=currentstring
     currentstring+=result
     display.textContent=currentstring
     let isZero=true
     let operatorPut=false
     let decimalPut=false
+    firstOperandString=result
+    currentstring=result
+    secondOperandString=""
+    result=""
 }
 
-let add= (a,b)=>(a+b)
-let sub= (a,b)=>(a-b)
-let mult= (a,b)=>(a*b)
-let div= (a,b)=>(a/b)
+let add=(a,b)=>(a+b)
+let sub=(a,b)=>(a-b)
+let mult=(a,b)=>(a*b)
+let div=(a,b)=>(a/b)
 let mod=(a,b)=>(a%b)
 let exp=(a,b)=>(a**b)
